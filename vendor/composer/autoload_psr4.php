@@ -12,6 +12,7 @@ return array(
     'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
     'Symfony\\Component\\Debug\\' => array($vendorDir . '/symfony/debug'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
+    'Spatie\\ArrayToXml\\' => array($vendorDir . '/spatie/array-to-xml/src'),
     'SixtyNine\\DataTypes\\' => array($vendorDir . '/sixty-nine/php-data-types/src/SixtyNine/DataTypes'),
     'SixtyNine\\Cloud\\' => array($vendorDir . '/sixty-nine/php-cloud-lib/src/SixtyNine/Cloud'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),

@@ -1,6 +1,7 @@
 {
     "require": {
         "php-curl-class/php-curl-class": "^8.0",
-        "sixty-nine/php-cloud-lib": "dev-master"
+        "sixty-nine/php-cloud-lib": "dev-master",
+        "spatie/array-to-xml": "^2.7"
     }
 }

@@ -22,6 +22,7 @@ class ComposerStaticInitcc13e717305c08653243fd87fd67cabd
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
+            'Spatie\\ArrayToXml\\' => 18,
             'SixtyNine\\DataTypes\\' => 20,
             'SixtyNine\\Cloud\\' => 16,
         ),
@@ -68,6 +69,10 @@ class ComposerStaticInitcc13e717305c08653243fd87fd67cabd
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'Spatie\\ArrayToXml\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/array-to-xml/src',
         ),
         'SixtyNine\\DataTypes\\' => 
         array (
