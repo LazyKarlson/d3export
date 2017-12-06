@@ -1,0 +1,6 @@
+{
+    "require": {
+        "php-curl-class/php-curl-class": "^8.0",
+        "sixty-nine/php-cloud-lib": "dev-master"
+    }
+}
