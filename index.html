@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Request JSON Test</title>
+  </head>
+  <body>
+    <a href="#" id="get-data">Get JSON data</a>
+    <div id="show-data"></div>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script>
+    $(document).ready(function () {
+  $('#get-data').click(function () {
+    var showData = $('#show-data');
+
+    $.getJSON('https://d3.ru/api/users/LazyKarlson/posts/', function (data) {
+      console.log(data);
+
+      var items = data.items.map(function (item) {
+        return item.key + ': ' + item.value;
+      });
+
+      showData.empty();
+
+      if (items.length) {
+        var content = '<li>' + items.join('</li><li>') + '</li>';
+        var list = $('<ul />').html(content);
+        showData.append(list);
+      }
+    });
+
+    showData.text('Loading the JSON file.');
+  });
+});</script>
+  </body>
+</html>

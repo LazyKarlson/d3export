@@ -1,9 +1,14 @@
-<?php 
+<?php
 require __DIR__ . '/vendor/autoload.php';
 
 use \Curl\Curl;
-$filename = 'test.xml';
-$handle = fopen($filename, 'a');
+$filename = strftime('posts_%m_%d_%Y.xml');
+header('Content-Disposition: attachment;filename=' . $filename);
+header('Content-Type: text/xml');
+//$handle = fopen($filename, 'w');
+$first_str = "<?xml version='1.0' encoding='UTF-8'?>\n<ns0:feed xmlns:ns0=\"http://www.w3.org/2005/Atom\">\n<ns0:generator>Blogger</ns0:generator>\n";
+echo $first_str;
+//fwrite($handle, $first_str);
 $curl = new Curl();
 $username = "LazyKarlson";
 $url = "https://d3.ru/api/users/".$username."/posts/";
@@ -12,23 +17,25 @@ $curl->get($url);
 if ($curl->error) {
     echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
 } else {
-	 $pages = $curl->response->page_count;	 
+	 $pages = $curl->response->page_count;
 	 //for ($i = 1; $i <= $pages; $i++){
-	 for ($i = 1; $i <= 1; $i++){
+	 for ($i = 2; $i <= 2; $i++){
 	 	$curl->get($url, array(
     	'page' => $i,
 		));
-		saveToXML($curl->response->posts, $handle);	 	
+		saveToXML($curl->response->posts, $handle);
 	}
 }
 
-function saveToXML($posts, $file){	
-	 foreach ($posts as &$value) {	 		 	
+//function saveToXML($posts, $file){
+function saveToXML($posts){
+
+	 foreach ($posts as &$value) {
 	 	if (empty($value->is_hidden)){
 	 		if (count($value->tags) > 0){
 				$tags = createTags($value->tags);
 				}
-			else { $tags = "";}	
+			else { $tags = "";}
 	 		$entry = '<ns0:entry>'."\n".'<ns0:category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/blogger/2008/kind#post" />'."\n";
 	 		$entry .= $tags;
 	 		$entry .= "<ns0:id>".$value->id."</ns0:id>"."\n";
@@ -44,20 +51,21 @@ function saveToXML($posts, $file){
 			    case "article":
 			        $xml = articleToXML($value);
 			        break;
-			}	
+			}
 			$entry .= $xml;
 			$entry .= "</ns0:entry>"."\n";
-			fwrite($file, $entry); 	
-	 	}		 		 
+      echo $entry;
+			//fwrite($file, $entry);
+	 	}
 	}
 }
 
-function linkToXML($value){	
+function linkToXML($value){
 	$header = '';
 	$link = '';
 	$link_title = '';
 	$description = '';
-	$post_img = '';	
+	$post_img = '';
 	if (isset($value->data->link->type)){
 	switch ($value->data->link->type) {
 			    case "image":
@@ -88,16 +96,44 @@ function linkToXML($value){
 	$text .= $value->data->text;
 	$text .= "<br />Опубликовано на <a href='".$value->_links[1]->href."'>".$value->domain->url."</a>";
 	$text = '<ns0:content type="html">'.stripText($text).'</ns0:content>'."\n";
-	return $text;		
+	return $text;
 }
 
 function galleryToXML($value){
-	
+  $gallery ="";
+ foreach ($value->data->gallery as &$image){
+  $gallery .= "<img src='".$image->url."'><br /><h4>".$image->text."<h4><br />";
+ }
+  $text = "<h3>".$value->data->subtitle."<h3><br />";
+  $text .= $value->data->text;
+  $text .= $gallery;
+	$text .= "<br />Опубликовано на <a href='".$value->_links[1]->href."'>".$value->domain->url."</a>";
+	$text = '<ns0:content type="html">'.stripText($text).'</ns0:content>'."\n";
+	return $text;
 }
 
 function articleToXML($value){
-	
-}
+  $article ="";
+  foreach ($value->data->blocks as &$block){
+    switch ($block->type) {
+  			    case "image":
+  			        $article .= "<img src='".$block->url."' align='".$block->align."'><br /><h4>".$block->text."<h4><br />";
+  			        break;
+  			    case "text":
+  			        $article .= $block->text;
+  			        break;
+  			    case "embed":
+  			        $article .= embedVideo($block->url);
+  			        break;
+  			}
+  }
+  $text = "<h3>".$value->data->subtitle."<h3><br />";
+  $text .= $article;
+  $text .= "<br />Опубликовано на <a href='".$value->_links[1]->href."'>".$value->domain->url."</a>";
+  $text = '<ns0:content type="html">'.stripText($text).'</ns0:content>'."\n";
+  return $text;
+  }
+
 
 function embedVideo($url){
 	$iframe = '&lt;iframe allowfullscreen="" frameborder="0" height="270" src="'.$url.'" width="480"&gt;&lt;/iframe&gt;';
@@ -108,12 +144,12 @@ function timestampToDate($timestamp){
 	$pub_date = date("Y-m-d\TH:i:s", $timestamp);
 	$published = "<ns0:published>".$pub_date.".001+03:00</ns0:published>"."\n";
 	return $published;
-} 
+}
 
 function stripText($text){
 	$text = preg_replace("/</", "&lt;",preg_replace("/>/", "&gt;",$text));
 	return $text;
-}	
+}
 
 function createTags($tags){
 	$term = '';
@@ -122,5 +158,6 @@ function createTags($tags){
 	}
 	return $term;
 }
-fwrite($handle, "</ns0:feed>");
-fclose($handle);
+echo "</ns0:feed>";
+//fwrite($handle, "</ns0:feed>");
+//fclose($handle);
